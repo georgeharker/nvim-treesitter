@@ -75,11 +75,18 @@
 (return_statement
   [
     (_) @indent_end 
-    (_ (_) @indent_end .)
+    (_
+      [
+        (_)
+        ")"
+        "}"
+        "]"
+      ] @indent_end .)
     (attribute 
       attribute: (_) @indent_end)
+    (call
+      arguments: (_ ")" @indent_end))
     "return" @indent_end
-    (_ ")" @indent_end)
   ] .)
 
 [
