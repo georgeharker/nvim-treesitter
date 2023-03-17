@@ -262,7 +262,7 @@ function M.get_indent(lnum)
         if c_srow and c_srow ~= o_srow and c_srow == lnum - 1 then
           -- delims end on current line, and are not open and closed same line.
           -- then this last line may need additional indent to avoid clashes
-          -- with the next. final_line_indent controls this behavior, 
+          -- with the next. final_line_indent controls this behavior,
           -- for example this is needed for function parameters.
           final_line_indent = metadata.final_line_indent or false
         end
