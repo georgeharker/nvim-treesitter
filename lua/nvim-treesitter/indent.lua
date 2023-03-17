@@ -208,9 +208,8 @@ function M.get_indent(lnum)
     if (should_process and q.aligned_indent[node:id()]
         and (srow ~= erow or is_in_err) and (srow ~= lnum - 1)) then
       local metadata = q.aligned_indent[node:id()]
-      local o_delim_node, o_is_last_in_line ---@type TSNode|nil, boolean|nil
-      local c_delim_node, c_is_last_in_line  ---@type TSNode|nil, boolean|nil, 
-      local c_is_first_in_line  ---@type boolean|nil
+      local o_delim_node, o_is_last_in_line, o_is_alone ---@type TSNode|nil, boolean|nil, boolean|nil
+      local c_delim_node, c_is_last_in_line, c_is_alone ---@type TSNode|nil, boolean|nil, boolean|nil
       if metadata.delimiter then
         ---@type string
         local opening_delimiter = metadata.delimiter and metadata.delimiter:sub(1, 1)
