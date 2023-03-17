@@ -211,7 +211,7 @@ function M.get_indent(lnum)
               -- Then its indent level shouldn't be affected by @aligned_indent node
               local c_srow, _ = c_delim_node:start()
               if c_srow < lnum - 1 then
-                indent = indent - indent_size
+                indent = math.max(indent - indent_size, 0)
               end
             end
           end
@@ -238,8 +238,9 @@ function M.get_indent(lnum)
               return aligned_indent
             end
           else
-            return o_scol + (metadata.increment or 1)
-            if c_srow >= lnum - 1 then
+            if c_srow and o_srow ~= c_srow and c_srow < lnum - 1 then
+              return vim.fn.indent(o_srow + 1)
+            else
               return o_scol + (metadata.increment or 1)
             end
           end
