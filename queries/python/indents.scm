@@ -1,8 +1,4 @@
 [
-  (list)
-  (dictionary)
-  (set)
-
   (import_from_statement)
 
   (parenthesized_expression)
@@ -20,6 +16,19 @@
   (concatenated_string)
 ] @indent
 
+((list) @aligned_indent
+ (#set! "delimiter" "[]")
+ (#set! "dedent_bare_closing_delim" 1)
+)
+((dictionary) @aligned_indent
+ (#set! "delimiter" "{}")
+ (#set! "dedent_bare_closing_delim" 1)
+)
+((set) @aligned_indent
+ (#set! "delimiter" "{}")
+ (#set! "dedent_bare_closing_delim" 1)
+)
+
 ((for_statement) @indent
  (#set! "immediate_indent" 1))
 ((if_statement) @indent
@@ -28,8 +37,7 @@
  (#set! "immediate_indent" 1))
 ((try_statement) @indent
  (#set! "immediate_indent" 1))
-((ERROR "try" ":") @indent
- (#set! "immediate_indent" 1))
+(ERROR "try" ":" @indent (#set! "immediate_indent" 1))
 ((function_definition) @indent
  (#set! "immediate_indent" 1))
 ((class_definition) @indent
@@ -48,17 +56,20 @@
   (#set! "final_line_indent" 1) ; parenthesized_expression already indented
 )
 
-((ERROR "(" . (_)) @aligned_indent
- (#set! "delimiter" "()"))
-((argument_list) @aligned_indent
+(ERROR "(" @aligned_indent (#set! "delimiter" "()") . (_)) 
+((argument_list ")" ) @aligned_indent
  (#set! "delimiter" "()"))
 ((parameters) @aligned_indent
  (#set! "delimiter" "()")
- (#set! "final_line_indent" 1))
+ (#set! "final_line_indent" 1)
+)
 ((tuple) @aligned_indent
  (#set! "delimiter" "()"))
 
+(ERROR "[" @aligned_indent (#set! "delimiter" "[]") . (_)) 
 (list "]" @indent_end)
+
+(ERROR "{" @aligned_indent (#set! "delimiter" "{}") . (_)) 
 (dictionary "}" @indent_end)
 (set "}" @indent_end)
 
@@ -100,3 +111,4 @@
 ] @branch
 
 (string) @auto
+
