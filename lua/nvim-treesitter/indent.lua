@@ -44,9 +44,9 @@ local function find_delimiter(bufnr, node, delimiter)
       local line = vim.api.nvim_buf_get_lines(bufnr, linenr, linenr + 1, false)[1]
       local end_char = { child:end_() }
       local trimmed_before_delim
-      trimmed_before_delim, _ = line:sub(1, end_char[2] - 1):gsub('[%s%' .. delimiter .. ']*', '')
+      trimmed_before_delim, _ = line:sub(1, end_char[2] - 1):gsub("[%s%" .. delimiter .. "]*", "")
       local trimmed_after_delim
-      trimmed_after_delim, _ = line:sub(end_char[2] + 1):gsub('[%s%' .. delimiter .. ']*', '')
+      trimmed_after_delim, _ = line:sub(end_char[2] + 1):gsub("[%s%" .. delimiter .. "]*", "")
       return child, #trimmed_after_delim == 0, #trimmed_before_delim == 0
     end
   end
@@ -191,22 +191,21 @@ function M.get_indent(lnum)
     end
 
     if is_in_err and not q.aligned_indent[node:id()] then
-        -- only when the node is in error, promote the
-        -- first child's aligned indent to the error node
-        -- to work around ((ERROR "X" . (_)) @aligned_indent (#set! "delimeter" "AB"))
-        -- matching for all X, instead set do
-        -- (ERROR "X" @aligned_indent (#set! "delimeter" "AB") . (_))
-        -- and we will fish it out here.
-        for c in node:iter_children() do
-            if q.aligned_indent[c:id()] then
-                q.aligned_indent[node:id()] = q.aligned_indent[c:id()]
-                break
-            end
+      -- only when the node is in error, promote the
+      -- first child's aligned indent to the error node
+      -- to work around ((ERROR "X" . (_)) @aligned_indent (#set! "delimeter" "AB"))
+      -- matching for all X, instead set do
+      -- (ERROR "X" @aligned_indent (#set! "delimeter" "AB") . (_))
+      -- and we will fish it out here.
+      for c in node:iter_children() do
+        if q.aligned_indent[c:id()] then
+          q.aligned_indent[node:id()] = q.aligned_indent[c:id()]
+          break
         end
+      end
     end
     -- do not indent for nodes that starts-and-ends on same line and starts on target line (lnum)
-    if (should_process and q.aligned_indent[node:id()]
-        and (srow ~= erow or is_in_err) and (srow ~= lnum - 1)) then
+    if should_process and q.aligned_indent[node:id()] and (srow ~= erow or is_in_err) and (srow ~= lnum - 1) then
       local metadata = q.aligned_indent[node:id()]
       local o_delim_node, o_is_last_in_line ---@type TSNode|nil, boolean|nil
       local c_delim_node, c_is_last_in_line, c_is_alone ---@type TSNode|nil, boolean|nil, boolean|nil
@@ -243,14 +242,17 @@ function M.get_indent(lnum)
           end
         else
           -- aligned indent
-          if (c_delim_node and c_is_last_in_line and
-              c_srow and o_srow ~= c_srow and c_srow < lnum - 1) then
+          if c_delim_node and c_is_last_in_line and c_srow and o_srow ~= c_srow and c_srow < lnum - 1 then
             -- If current line is outside the range of a node marked with `@aligned_indent`
             -- Then its indent level shouldn't be affected by `@aligned_indent` node
             indent = math.max(indent - indent_size, 0)
-          elseif (c_srow and o_srow ~= c_srow and c_srow == lnum - 1
-                  and c_is_alone
-                  and (metadata.dedent_bare_closing_delim or false)) then
+          elseif
+            c_srow
+            and o_srow ~= c_srow
+            and c_srow == lnum - 1
+            and c_is_alone
+            and (metadata.dedent_bare_closing_delim or false)
+          then
             -- if the line only contains closing delims and so specified
             -- dedent
             indent = vim.fn.indent(o_srow + 1)
