@@ -57,12 +57,11 @@
 )
 
 (ERROR "(" @aligned_indent (#set! "delimiter" "()") . (_)) 
-((argument_list ")" ) @aligned_indent
+((argument_list) @aligned_indent
  (#set! "delimiter" "()"))
 ((parameters) @aligned_indent
  (#set! "delimiter" "()")
- (#set! "final_line_indent" 1)
-)
+ (#set! "final_line_indent" 1))
 ((tuple) @aligned_indent
  (#set! "delimiter" "()"))
 

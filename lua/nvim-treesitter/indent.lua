@@ -210,6 +210,7 @@ function M.get_indent(lnum)
       local metadata = q.aligned_indent[node:id()]
       local o_delim_node, o_is_last_in_line ---@type TSNode|nil, boolean|nil
       local c_delim_node, c_is_last_in_line, c_is_alone ---@type TSNode|nil, boolean|nil, boolean|nil
+      local indent_is_absolute = false
       if metadata.delimiter then
         ---@type string
         local opening_delimiter = metadata.delimiter and metadata.delimiter:sub(1, 1)
@@ -246,7 +247,7 @@ function M.get_indent(lnum)
               c_srow and o_srow ~= c_srow and c_srow < lnum - 1) then
             -- If current line is outside the range of a node marked with `@aligned_indent`
             -- Then its indent level shouldn't be affected by `@aligned_indent` node
-            indent = vim.fn.indent(o_srow + 1)
+            indent = math.max(indent - indent_size, 0)
           elseif (c_srow and o_srow ~= c_srow and c_srow == lnum - 1
                   and c_is_alone
                   and (metadata.dedent_bare_closing_delim or false)) then
@@ -255,6 +256,7 @@ function M.get_indent(lnum)
             indent = vim.fn.indent(o_srow + 1)
           else
             indent = o_scol + (metadata.increment or 1)
+            indent_is_absolute = true
           end
         end
         -- deal with the final line
@@ -278,6 +280,10 @@ function M.get_indent(lnum)
           end
         end
         is_processed = true
+        if indent_is_absolute then
+          -- don't allow further indenting by parent nodes, this is an absolute position
+          return indent
+        end
       end
     end
 
