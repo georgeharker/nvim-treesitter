@@ -210,14 +210,14 @@ function M.get_indent(lnum)
       local o_delim_node, o_is_last_in_line ---@type TSNode|nil, boolean|nil
       local c_delim_node, c_is_last_in_line, c_is_alone ---@type TSNode|nil, boolean|nil, boolean|nil
       local indent_is_absolute = false
-      if metadata.delimiter then
-        ---@type string
-        local opening_delimiter = metadata.delimiter and metadata.delimiter:sub(1, 1)
-        o_delim_node, o_is_last_in_line, _ = find_delimiter(bufnr, node, opening_delimiter)
-        local closing_delimiter = metadata.delimiter and metadata.delimiter:sub(2, 2)
-        c_delim_node, c_is_last_in_line, c_is_alone = find_delimiter(bufnr, node, closing_delimiter)
+      if metadata.open_delimiter then
+        o_delim_node, o_is_last_in_line, _ = find_delimiter(bufnr, node, metadata.open_delimiter)
       else
         o_delim_node = node
+      end
+      if metadata.close_delimiter then
+        c_delim_node, c_is_last_in_line, c_is_alone = find_delimiter(bufnr, node, metadata.close_delimiter)
+      else
         c_delim_node = node
       end
 
@@ -251,7 +251,7 @@ function M.get_indent(lnum)
             and o_srow ~= c_srow
             and c_srow == lnum - 1
             and c_is_alone
-            and (metadata.dedent_bare_closing_delim or false)
+            and (metadata.dedent_lone_close_delimiter or false)
           then
             -- if the line only contains closing delims and so specified
             -- dedent
@@ -262,15 +262,15 @@ function M.get_indent(lnum)
           end
         end
         -- deal with the final line
-        local final_line_indent = false
+        local avoid_last_matching_next = false
         if c_srow and c_srow ~= o_srow and c_srow == lnum - 1 then
           -- delims end on current line, and are not open and closed same line.
           -- then this last line may need additional indent to avoid clashes
-          -- with the next. final_line_indent controls this behavior,
+          -- with the next. `avoid_last_matching_next` controls this behavior,
           -- for example this is needed for function parameters.
-          final_line_indent = metadata.final_line_indent or false
+          avoid_last_matching_next = metadata.avoid_last_matching_next or false
         end
-        if final_line_indent then
+        if avoid_last_matching_next then
           -- last line must be indented more in cases where
           -- it would be same indent as next line (we determine this as one
           -- width more than the open indent to avoid confusing with any

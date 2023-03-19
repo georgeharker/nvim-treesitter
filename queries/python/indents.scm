@@ -17,16 +17,19 @@
 ] @indent
 
 ((list) @aligned_indent
- (#set! "delimiter" "[]")
- (#set! "dedent_bare_closing_delim" 1)
+ (#set! "open_delimiter" "[")
+ (#set! "close_delimiter" "]")
+ (#set! "dedent_lone_close_delimiter" 1)
 )
 ((dictionary) @aligned_indent
- (#set! "delimiter" "{}")
- (#set! "dedent_bare_closing_delim" 1)
+ (#set! "open_delimiter" "{")
+ (#set! "close_delimiter" "}")
+ (#set! "dedent_lone_close_delimiter" 1)
 )
 ((set) @aligned_indent
- (#set! "delimiter" "{}")
- (#set! "dedent_bare_closing_delim" 1)
+ (#set! "open_delimiter" "{")
+ (#set! "close_delimiter" "}")
+ (#set! "dedent_lone_close_delimiter" 1)
 )
 
 ((for_statement) @indent
@@ -47,28 +50,33 @@
 
 (if_statement
   condition: (parenthesized_expression) @aligned_indent
-  (#set! "delimiter" "()")
-  (#set! "final_line_indent" 1) ; parenthesized_expression already indented
+  (#set! "open_delimiter" "(")
+  (#set! "close_delimiter" ")")
+  (#set! "avoid_last_matching_next") ; parenthesized_expression already indented
 )
 (while_statement
   condition: (parenthesized_expression) @aligned_indent
-  (#set! "delimiter" "()")
-  (#set! "final_line_indent" 1) ; parenthesized_expression already indented
+  (#set! "open_delimiter" "(")
+  (#set! "close_delimiter" ")")
+  (#set! "avoid_last_matching_next") ; parenthesized_expression already indented
 )
 
-(ERROR "(" @aligned_indent (#set! "delimiter" "()") . (_)) 
+(ERROR "(" @aligned_indent (#set! "open_delimiter" "(") (#set! "close_delimiter" ")") . (_)) 
 ((argument_list) @aligned_indent
- (#set! "delimiter" "()"))
+ (#set! "open_delimiter" "(")
+ (#set! "close_delimiter" ")"))
 ((parameters) @aligned_indent
- (#set! "delimiter" "()")
- (#set! "final_line_indent" 1))
+ (#set! "open_delimiter" "(")
+ (#set! "close_delimiter" ")")
+ (#set! "avoid_last_matching_next"))
 ((tuple) @aligned_indent
- (#set! "delimiter" "()"))
+ (#set! "open_delimiter" "(")
+ (#set! "close_delimiter" ")"))
 
-(ERROR "[" @aligned_indent (#set! "delimiter" "[]") . (_)) 
+(ERROR "[" @aligned_indent (#set! "open_delimiter" "[") (#set! "close_delimiter" "]") . (_)) 
 (list "]" @indent_end)
 
-(ERROR "{" @aligned_indent (#set! "delimiter" "{}") . (_)) 
+(ERROR "{" @aligned_indent (#set! "open_delimiter" "{") (#set! "close_delimiter" "}") . (_)) 
 (dictionary "}" @indent_end)
 (set "}" @indent_end)
 
