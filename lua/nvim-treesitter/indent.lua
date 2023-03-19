@@ -44,9 +44,9 @@ local function find_delimiter(bufnr, node, delimiter)
       local line = vim.api.nvim_buf_get_lines(bufnr, linenr, linenr + 1, false)[1]
       local end_char = { child:end_() }
       local trimmed_before_delim
-      trimmed_before_delim, _ = line:sub(1, end_char[2] - 1):gsub("[%s%" .. delimiter .. "]*", "")
+      trimmed_before_delim, _ = line:sub(1, end_char[2] - 1):gsub("%s", "")
       local trimmed_after_delim
-      trimmed_after_delim, _ = line:sub(end_char[2] + 1):gsub("[%s%" .. delimiter .. "]*", "")
+      trimmed_after_delim, _ = line:sub(end_char[2] + 1):gsub("%s", "")
       return child, #trimmed_after_delim == 0, #trimmed_before_delim == 0
     end
   end
@@ -242,7 +242,7 @@ function M.get_indent(lnum)
           end
         else
           -- aligned indent
-          if c_delim_node and c_is_last_in_line and c_srow and o_srow ~= c_srow and c_srow < lnum - 1 then
+          if c_is_last_in_line and o_srow ~= c_srow and c_srow < lnum - 1 then
             -- If current line is outside the range of a node marked with `@aligned_indent`
             -- Then its indent level shouldn't be affected by `@aligned_indent` node
             indent = math.max(indent - indent_size, 0)

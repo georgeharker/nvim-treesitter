@@ -18,8 +18,8 @@
   (#set! "close_delimiter" ")"))
 
 ((const_list (const_value)) @aligned_indent
-  (#set! "open_delimiter" "(")
-  (#set! "close_delimiter" ")"))
+  (#set! "open_delimiter" "[")
+  (#set! "close_delimiter" "]"))
 
 [
   "}"
