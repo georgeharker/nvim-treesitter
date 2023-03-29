@@ -17,42 +17,31 @@
 ((list) @indent.align
  (#set! indent.open_delimiter "[")
  (#set! indent.close_delimiter "]")
- (#set! indent.dedent_hanging_closing 1)
+ (#set! indent.dedent_hanging_close 1)
 )
 ((dictionary) @indent.align
  (#set! indent.open_delimiter "{")
  (#set! indent.close_delimiter "}")
- (#set! indent.dedent_hanging_closing 1)
+ (#set! indent.dedent_hanging_close 1)
 )
 ((set) @indent.align
  (#set! indent.open_delimiter "{")
  (#set! indent.close_delimiter "}")
- (#set! indent.dedent_hanging_closing 1)
+ (#set! indent.dedent_hanging_close 1)
 )
 
-((match_statement) @indent.begin
- (#set! indent.immediate 1))
-((case_clause) @indent.begin
- (#set! indent.immediate 1))
-((for_statement) @indent.begin
- (#set! indent.immediate 1))
-((if_statement) @indent.begin
- (#set! indent.immediate 1))
-((while_statement) @indent.begin
- (#set! indent.immediate 1))
-((try_statement) @indent.begin
- (#set! indent.immediate 1))
-(ERROR "try" ":" @indent.begin (#set! indent.immediate 1))
-((function_definition) @indent.begin
- (#set! indent.immediate 1))
-((class_definition) @indent.begin
- (#set! indent.immediate 1))
-((with_statement) @indent.begin
- (#set! indent.immediate 1))
-((match_statement) @indent.begin
- (#set! indent.immediate 1))
-((case_clause) @indent.begin
- (#set! indent.immediate 1))
+((match_statement) @indent.begin)
+((case_clause) @indent.begin)
+((for_statement) @indent.begin)
+((if_statement) @indent.begin)
+((while_statement) @indent.begin)
+((try_statement) @indent.begin)
+(ERROR "try" ":" @indent.begin)
+((function_definition) @indent.begin)
+((class_definition) @indent.begin)
+((with_statement) @indent.begin)
+((match_statement) @indent.begin)
+((case_clause) @indent.begin)
 
 (if_statement
   condition: (parenthesized_expression) @indent.align
@@ -71,7 +60,7 @@
 ((argument_list) @indent.align
  (#set! indent.open_delimiter "(")
  (#set! indent.close_delimiter ")")
- (#set! indent.dedent_hanging_closing 1))
+ (#set! indent.dedent_hanging_close 1))
 ((parameters) @indent.align
  (#set! indent.open_delimiter "(")
  (#set! indent.close_delimiter ")")
@@ -79,11 +68,11 @@
 ((tuple) @indent.align
  (#set! indent.open_delimiter "(")
  (#set! indent.close_delimiter ")")
- (#set! indent.dedent_hanging_closing 1))
+ (#set! indent.dedent_hanging_close 1))
 ((import_from_statement "(" _ ")") @indent.align 
  (#set! indent.open_delimiter "(")
  (#set! indent.close_delimiter ")")
- (#set! indent.dedent_hanging_closing 1))
+ (#set! indent.dedent_hanging_close 1))
 
 (ERROR "[" @indent.align (#set! indent.open_delimiter "[") (#set! indent.close_delimiter "]") . (_)) 
 
@@ -98,39 +87,42 @@
 (tuple_pattern ")" @indent.end)
 (list_pattern "]" @indent.end)
 
-((return_statement) @indent.end
+((return_statement) @indent.dedent
+ (#set! indent.body 0)
+ (#set! indent.end 0)
  (#set! indent.after 1))
-((raise_statement) @indent.end
+((raise_statement) @indent.dedent
+ (#set! indent.body 0)
+ (#set! indent.end 0)
  (#set! indent.after 1))
-((break_statement) @indent.end
+((break_statement) @indent.dedent
+ (#set! indent.body 0)
+ (#set! indent.end 0)
  (#set! indent.after 1))
-((continue_statement) @indent.end
+((continue_statement) @indent.dedent
+ (#set! indent.body 0)
+ (#set! indent.end 0)
  (#set! indent.after 1))
 
 (
  (except_clause
   "except" @indent.branch
-  (_) @indent.begin)
+  (_) )
 )
 
 (
  (finally_clause
   "finally" @indent.branch
-  (_) @indent.begin)
+  (_) )
 )
 
-(
- (elif_clause
+(elif_clause
   "elif" @indent.branch
-  consequence: (_) @indent.begin)
-)
+  consequence: (_) )
 
-(
- (else_clause
-  "else" @indent.branch
-  body: (_) @indent.begin
- )
-)
+(else_clause
+ "else" @indent.branch 
+ body: (_) )
 
 (string) @indent.auto
 

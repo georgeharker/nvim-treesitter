@@ -10,11 +10,31 @@
 ] @indent.begin
 
 (
+ (parenthesized_expression) @indent.align
+ (#set! indent.open_delimiter "(")
+ (#set! indent.close_delimiter ")")
+)
+
+;((parenthesized_expression "(" @indent.begin _ ")" @indent.end))
+
+(
+  (
   ERROR
-    "for" "(" @indent.begin ";" ";" ")" @indent.end)
+    "for" "(" @indent.begin ";" ";" ")" @indent.end) @indent.begin
+  (#set! indent.immediate 1)
+)
+
 (
   (for_statement
-    body: (_) @_body
+    body: (_) @_body 
+  ) @indent.indent
+  (#not-has-type? @_body compound_statement)
+  (#set! indent.immediate 1)
+)
+
+(
+  (for_statement
+    body: (_ ";" @indent.dedent (#set! indent.after 1)) @_body 
   ) @indent.begin
   (#not-has-type? @_body compound_statement)
 )
@@ -37,7 +57,8 @@
 
 (
  if_statement
-  condition: (_) @indent.begin
+  condition: (_) 
+  consequence: (_) @indent.begin
 )
 ;; Make sure all cases of if-else are tagged with @indent.begin
 ;; So we will offset the indents for the else case
@@ -56,6 +77,7 @@
 (
   (if_statement
     consequence: (_ ";" @indent.end) @_consequence
+    ;consequence: (_ ";") @_consequence
   ) @indent.begin
   (#not-has-type? @_consequence compound_statement)
 )
