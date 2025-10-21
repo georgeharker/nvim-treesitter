@@ -2703,7 +2703,7 @@ return {
     maintainers = { '@rockorager' },
     tier = 2,
   },
-  zsh_schema = {
+  zsh = {
     install_info = {
       location = 'tree-sitter-zsh',
       revision = '9340bfd8c8d556aea1d8feb41b32600ba9f3cc33',
