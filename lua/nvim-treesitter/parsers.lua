@@ -2706,9 +2706,8 @@ return {
   zsh = {
     install_info = {
       location = 'tree-sitter-zsh',
-      revision = '9340bfd8c8d556aea1d8feb41b32600ba9f3cc33',
+      revision = 'd3511be3f5b6fa8eb195707774be27d9fe4cfac0',
       url = 'https://github.com/georgeharker/tree-sitter-zsh',
-      queries = 'queries'
     },
     maintainers = { '@georgeharker' },
     tier = 2,
