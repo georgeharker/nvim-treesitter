@@ -341,7 +341,7 @@ end
 ---@param query_dir string
 ---@return string? err
 local function do_link_queries(logger, query_src, query_dir)
-  uv_unlink(query_dir)
+  rmpath(query_dir)
   local err = uv_symlink(query_src, query_dir, { dir = true, junction = true })
   a.schedule()
   if err then
